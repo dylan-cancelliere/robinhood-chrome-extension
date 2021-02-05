@@ -1,0 +1,14 @@
+{
+    "name": "",
+    "version": "1.0",
+    "manifest_version": 3,
+    "description": "Supress your paper hands urges",
+    "permissions": [
+        "tabs",
+        "activeTab"
+    ],
+    "content_scripts": [{
+        "matches": ["*://robinhood.com/*", "*://*.robinhood.com/*"],
+        "js": ["contentScript.js"]
+    }]
+}
