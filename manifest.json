@@ -4,8 +4,7 @@
     "manifest_version": 3,
     "description": "Supress your paper hands urges",
     "permissions": [
-        "tabs",
-        "activeTab"
+        "tabs"
     ],
     "content_scripts": [{
         "matches": ["*://.robinhood.com/*", "*://robinhood.com/*"],
