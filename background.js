@@ -1,31 +1,41 @@
-    let regex = /.+(:\/\/).*(robinhood)(.com).*/g;
+let regex = /.+(:\/\/).*(robinhood)(.com).*/g;
 
-    chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-        if (regex.test(changeInfo.url)) {
-            console.log("Test 1");
-            let tags = findStuffToRemove();
-            chrome.scripting.executeScript({
-                target: { tabId: tabId },
-                function: findStuffToRemove,
-            });
-        }
-    });
+let port;
 
-    function removeStuff() {
-
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+    if (regex.test(changeInfo.url)){
+        port = chrome.tabs.connect(tabId, {name: "robinhood"});
     }
+});
 
-    function findStuffToRemove() {
-        console.log(this);
-        let spanTags = document.getElementsByTagName("span");
-        let searchText = "Sell"
-        let found = [];
+let counter = 0, previousLength;
 
-        for (let i = 0; i < spanTags.length; i++) {
-            console.log(spanTags[i]);
-            if (spanTags[i].textContent.includes(searchText)) {
-                found.push(spanTags[i]);
-            }
+chrome.runtime.onConnect.addListener(function(port){
+    console.assert(port.name == "robinhood");
+    port.onMessage.addListener(function(msg){
+        switch (msg.message){
+            case "loaded":
+                if (counter <= 100){
+                    setTimeout(initiate.bind(null, port), 200);
+                }else{
+                    console.log("No tags found");
+                    counter = 0;
+                }
+                break;
+            case "initialSearch":
+                counter = 0;
+                if (previousLength == null){
+                    previousLength = msg.count;
+                    setTimeout(initiate.bind(null, port), 200);
+                }else if (previousLength != 0 && previousLength != msg.count){
+                    port.postMessage({message: "deleteTags"});
+                }else{
+                    setTimeout(initiate.bind(null, port), 200);
+                }
         }
-        return found;
-    }
+    })
+});
+
+function initiate(port){
+    port.postMessage({message: "loaded"});
+}

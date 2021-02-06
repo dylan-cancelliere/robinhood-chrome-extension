@@ -8,7 +8,10 @@
         "activeTab"
     ],
     "content_scripts": [{
-        "matches": ["*://robinhood.com/*", "*://*.robinhood.com/*"],
+        "matches": ["*://.robinhood.com/*", "*://robinhood.com/*"],
         "js": ["contentScript.js"]
-    }]
+    }],
+    "background": {
+        "service_worker": "background.js"
+    }
 }

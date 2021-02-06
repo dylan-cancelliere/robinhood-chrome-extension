@@ -1,4 +1,29 @@
 let regex = /.+(:\/\/).*(robinhood)(.com).*/g;
+let port = chrome.runtime.connect({name: "robinhood"});
+let temp;
+
+port.postMessage({message: "loaded"});
+
+port.onMessage.addListener(function(request){
+    switch(request.message){
+        case "loaded":
+            temp = findStuffToRemove();
+            if (temp.length == 0){
+                port.postMessage({message: "loaded"});
+            }else{
+                port.postMessage({message: "initialSearch", count: temp.length});
+            }
+            break;
+        case "deleteTags":
+            temp.forEach(element => {
+                element.remove()
+            });
+        
+    }
+})
+
+
+
 
 function findStuffToRemove() {
     let spanTags = document.getElementsByTagName("span");
