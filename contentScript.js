@@ -31,6 +31,7 @@ window.addEventListener("load", () => {
             if (oldHref != document.location.href){
                 oldHref = document.location.href;
                 console.log("URL Changed :)");
+                port.postMessage({message: "loaded"});
             }
         });
     });
