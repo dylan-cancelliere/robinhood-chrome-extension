@@ -22,8 +22,26 @@ port.onMessage.addListener(function(request){
     }
 })
 
+let oldHref = document.location.href;
 
+window.addEventListener("load", () => {
+    let bodyList = document.querySelector("body")
+    let observer = new MutationObserver(function(mutations){
+        mutations.forEach(function(mutation){
+            if (oldHref != document.location.href){
+                oldHref = document.location.href;
+                console.log("URL Changed :)");
+            }
+        });
+    });
 
+    let config = {
+        childList: true,
+        subtree: true
+    };
+
+    observer.observe(bodyList, config);
+});
 
 function findStuffToRemove() {
     let spanTags = document.getElementsByTagName("span");

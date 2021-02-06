@@ -3,7 +3,9 @@ let regex = /.+(:\/\/).*(robinhood)(.com).*/g;
 let port;
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    if (regex.test(changeInfo.url)){
+    console.log(tab.url);
+    if (regex.test(tab.url)){
+        console.log("passed regex");
         port = chrome.tabs.connect(tabId, {name: "robinhood"});
     }
 });
